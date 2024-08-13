@@ -1,0 +1,1 @@
+## In this project we are going to implement Ai Agents to perform certain task. That too without the use of any language framework such as LangChain or Llammaindex, etc.
