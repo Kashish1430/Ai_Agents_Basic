@@ -1,5 +1,6 @@
 openai
 python-dotenv
 groq
+langchain
 
 -e .

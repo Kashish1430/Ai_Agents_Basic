@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from groq import Groq
 import os
 
+
 load_dotenv()
 
 def get_groq_api_key():
@@ -28,3 +29,6 @@ def get_prompt():
 
 def calculate(question):
     return eval(question)
+
+def get_serp_api_key():
+    return os.getenv('SERP_API')
