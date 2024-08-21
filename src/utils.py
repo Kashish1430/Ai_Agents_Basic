@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from groq import Groq
+from serpapi import GoogleSearch
 import os
 
 
@@ -31,4 +32,11 @@ def calculate(question):
     return eval(question)
 
 def get_serp_api_key():
-    return os.getenv('SERP_API')
+    return os.getenv('SERPAPI_API_KEY')
+
+def get_gdp(country:str, year:int):
+    search = GoogleSearch({
+        'q': f'What is/was the GDP of {country} in the year {year} in USD',
+        'api_key':get_serp_api_key()
+    })
+    return search.get_dict()

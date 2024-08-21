@@ -1,0 +1,5 @@
+from src.utils import get_gdp
+
+if __name__ == '__main__':
+    gdp = get_gdp('India', 2023)
+    print(gdp['answer_box']['snippet'])

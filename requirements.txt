@@ -2,5 +2,6 @@ openai
 python-dotenv
 groq
 langchain
+google-search-results
 
 -e .
