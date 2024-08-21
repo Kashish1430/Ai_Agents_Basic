@@ -25,8 +25,40 @@ def get_prompt():
     e.g. calculate: 12^2 * 7^3
     This action runs a calculation and returns a number as a result - This action uses python, so be sure to use floating point syntax wherever necessary
 
+    get_gdp:
+    e.g. get_gdp: India 2023
+    This action runs a google search and returns the gdp of a country in USD in the provided year.
 
-    """
+    Example Session
+    Question: What is the ratio between the GDP of India and Chain in 2023.
+    Thought: I need to get the GDP of India in the year 2023.
+    Action: get_gdp: India 2023
+    PAUSE 
+
+    You will be called again with this:
+    Observation: The statistic shows GDP in India from 1987 to 2023, with projections up until 2029. In 2023, GDP in India was at around 3.57 trillion U.S. dollars, and it is expected to reach six trillion by the end of the decade.
+
+    Thought: I need to get the GDP of Chain in the year 2023.
+    Action: get_gdp: China 2023
+    PAUSE
+
+    You will be called again with this:
+    Observation: Gross domestic product (GDP) of China 1985-2029. In 2023, the gross domestic product (GDP) of China amounted to around 17.7 trillion U.S. dollars.
+
+    Thought: I need to find the ratio between the GDP of both the countries
+    Action: calculate: 1 / (3.737 / 17.7) 
+    PAUSE
+
+    You will be called again with this:
+    Observation: 1:4.78
+
+    If you have the answer, Output it as the answer
+    Answer: The ratio of the GDP of India and China in the year 2023 is 1:4.78
+
+    Now it's your turn:
+    """.strip()
+
+    return prompt
 
 def calculate(question):
     return eval(question)
