@@ -2,7 +2,8 @@ from dotenv import load_dotenv
 from groq import Groq
 from serpapi import GoogleSearch
 import os
-
+import re
+from typing import List
 
 load_dotenv()
 
@@ -30,15 +31,15 @@ def get_prompt():
     This action runs a google search and returns the gdp of a country in USD in the provided year.
 
     Example Session
-    Question: What is the ratio between the GDP of India and Chain in 2023.
-    Thought: I need to get the GDP of India in the year 2023.
+    Question: What is the ratio between the GDP of India and Chain in 2023?
+    Thought: I need to get the GDP of India in the year 2023
     Action: get_gdp: India 2023
     PAUSE 
 
     You will be called again with this:
-    Observation: The statistic shows GDP in India from 1987 to 2023, with projections up until 2029. In 2023, GDP in India was at around 3.57 trillion U.S. dollars, and it is expected to reach six trillion by the end of the decade.
+    Observation: The statistic shows GDP in India from 1987 to 2023, with projections up until 2029. In 2023, GDP in India was at around 3.57 trillion U.S. dollars, and it is expected to reach six trillion by the end of the decade
 
-    Thought: I need to get the GDP of Chain in the year 2023.
+    Thought: I need to get the GDP of Chain in the year 2023
     Action: get_gdp: China 2023
     PAUSE
 
@@ -61,14 +62,19 @@ def get_prompt():
     return prompt
 
 def calculate(question):
+    print("CALCULATE FUNCTION CALLED")
     return eval(question)
 
 def get_serp_api_key():
     return os.getenv('SERPAPI_API_KEY')
 
-def get_gdp(country:str, year:int):
+def get_gdp(input_list: List[str]):
+    print("GET GDP FUNCTION CALLED")
     search = GoogleSearch({
-        'q': f'What is/was the GDP of {country} in the year {year} in USD',
+        'q': f'What is/was the GDP of {input_list[0]} in the year {input_list[1]} in USD',
         'api_key':get_serp_api_key()
     })
     return search.get_dict()
+
+def get_function_name_and_parameters(action):
+    return re.search(r"Action:\s*(\w+):\s*(.*)", action)

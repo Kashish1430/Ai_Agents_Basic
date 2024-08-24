@@ -1,4 +1,4 @@
-from src.utils import connect_to_groq, get_prompt
+from src.utils import connect_to_groq, get_prompt, calculate, get_function_name_and_parameters, get_gdp
 
 class AgentClass():
     def __init__(self, client, system_message):
@@ -21,9 +21,49 @@ class AgentClass():
         output = self.client.chat.completions.create(messages=self.history, model='llama3-8b-8192')
         return output.choices[0].message.content
 
+    def clear_history(self):
+        self.history = []
+        self.history.append({'role':'system', 'content':self.system_message})
+
 if __name__ == '__main__':
     client_groq = connect_to_groq()
     agent = AgentClass(client_groq, get_prompt())
-    result = agent('What is the GDP of india in 2022?')
-    print(result)
-    print(agent.history)
+    max_iter = 0
+    question = 'What is the GDP of USA in 2023 multiplied by 2 ?'
+    prompt = question
+    tools = ['calculate', 'get_gdp']
+    tools_map = {
+        'calculate':calculate,
+        'get_gdp': get_gdp
+    }
+    print('--------------')
+    while max_iter<2:
+        max_iter += 1
+        result = agent(prompt)
+
+        print(result)
+
+        if "PAUSE" in result and "Action" in result:
+            print('Inside Getting Function name')
+            action_tool_set = get_function_name_and_parameters(result)
+            func_name = action_tool_set.group(1)
+            if func_name =='get_gdp':
+                params = action_tool_set.group(2).split()
+            else:
+                params = action_tool_set.group(2)
+
+            if func_name in tools:
+                func_name = tools_map.get(func_name)
+                if isinstance(params, list):
+                    print(f'Calling {func_name}({params})')
+                    Observation = func_name(params) #eval(f"{func_name}({params})")
+                    prompt = Observation['answer_box']['snippet']
+                else:
+                    prompt = func_name(f'{params}') #eval(f"{func_name}('{params}')")
+            else:
+                prompt = 'Observation: Tool not Found'
+            print('Observation: ', prompt)
+            continue
+
+        if "Answer" in result:
+            break
