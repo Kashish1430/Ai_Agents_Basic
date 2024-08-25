@@ -29,7 +29,7 @@ if __name__ == '__main__':
     client_groq = connect_to_groq()
     agent = AgentClass(client_groq, get_prompt())
     max_iter = 0
-    question = 'What is the GDP of USA in 2023 multiplied by 2 ?'
+    question = 'What is the Ratio of GDP of France in 2023 and GDP of Russia in 2023 ?'
     prompt = question
     tools = ['calculate', 'get_gdp']
     tools_map = {
@@ -37,11 +37,14 @@ if __name__ == '__main__':
         'get_gdp': get_gdp
     }
     print('--------------')
-    while max_iter<2:
+    while max_iter<5:
         max_iter += 1
-        result = agent(prompt)
+        result = agent(str(prompt))
 
-        print(result)
+        print('Result Print: ',result)
+
+        if "Answer" in result:
+            break
 
         if "PAUSE" in result and "Action" in result:
             print('Inside Getting Function name')
@@ -59,11 +62,8 @@ if __name__ == '__main__':
                     Observation = func_name(params) #eval(f"{func_name}({params})")
                     prompt = Observation['answer_box']['snippet']
                 else:
-                    prompt = func_name(f'{params}') #eval(f"{func_name}('{params}')")
+                    prompt = func_name(params) #eval(f"{func_name}('{params}')")
             else:
                 prompt = 'Observation: Tool not Found'
-            print('Observation: ', prompt)
+            print('Observation as new prompt: ', prompt)
             continue
-
-        if "Answer" in result:
-            break

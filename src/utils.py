@@ -34,23 +34,28 @@ def get_prompt():
     Question: What is the ratio between the GDP of India and Chain in 2023?
     Thought: I need to get the GDP of India in the year 2023
     Action: get_gdp: India 2023
-    PAUSE 
+    PAUSE
+    After deciding on an Action you will PAUSE and wait to be provided with an Observation and recalled.
 
-    You will be called again with this:
+    You will be called again with an Observation:
     Observation: The statistic shows GDP in India from 1987 to 2023, with projections up until 2029. In 2023, GDP in India was at around 3.57 trillion U.S. dollars, and it is expected to reach six trillion by the end of the decade
+
 
     Thought: I need to get the GDP of Chain in the year 2023
     Action: get_gdp: China 2023
     PAUSE
+    After deciding on an Action you will PAUSE and wait to be provided with an Observation and recalled.
 
-    You will be called again with this:
+    You will be called again with an Observation:
     Observation: Gross domestic product (GDP) of China 1985-2029. In 2023, the gross domestic product (GDP) of China amounted to around 17.7 trillion U.S. dollars.
+
 
     Thought: I need to find the ratio between the GDP of both the countries
     Action: calculate: 1 / (3.737 / 17.7) 
     PAUSE
+    After deciding on an Action you will PAUSE and wait to be provided with an Observation and recalled.
 
-    You will be called again with this:
+    You will be called again with an Observation:
     Observation: 1:4.78
 
     If you have the answer, Output it as the answer
@@ -77,4 +82,19 @@ def get_gdp(input_list: List[str]):
     return search.get_dict()
 
 def get_function_name_and_parameters(action):
-    return re.search(r"Action:\s*(\w+):\s*(.*)", action)
+    #return re.search(r"Action:\s*(\w+):\s*(.*)", action)
+    pattern = r"Action:\s*(\w+):\s*(.+)"
+    return re.search(pattern, action)
+
+if __name__=='__main__':
+    Action = """
+    Thought: I need to find the ratio between the GDP of India and USA in the year 2023
+    Action: calculate: China 2023
+    """
+    output = get_function_name_and_parameters(Action)
+    print(output)
+    print(output.group(1))
+    print(output.group(2).split())
+    tools_map = {'calculate':calculate}
+    result = tools_map[output.group(1)](output.group(2))
+    print(result)
